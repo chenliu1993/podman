@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/containers/common/pkg/config"
 	"github.com/containers/podman/v2/libpod/define"
@@ -59,6 +60,7 @@ func (c *Container) attach(streams *define.AttachStreams, keys string, resize <-
 		return errors.Wrapf(err, "failed to connect to container's attach socket: %v", socketPath)
 	}
 	defer func() {
+		time.Sleep(1 * time.Second)
 		if err := conn.Close(); err != nil {
 			logrus.Errorf("unable to close socket: %q", err)
 		}
@@ -219,7 +221,9 @@ func redirectResponseToOutputStreams(outputStream, errorStream io.Writer, writeO
 	var err error
 	buf := make([]byte, 8192+1) /* Sync with conmon STDIO_BUF_SIZE */
 	for {
+		logrus.Infof("Read start")
 		nr, er := conn.Read(buf)
+		logrus.Infof("Read done")
 		if nr > 0 {
 			var dst io.Writer
 			var doWrite bool
