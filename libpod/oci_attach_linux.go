@@ -218,12 +218,17 @@ func setupStdioChannels(streams *define.AttachStreams, conn *net.UnixConn, detac
 }
 
 func redirectResponseToOutputStreams(outputStream, errorStream io.Writer, writeOutput, writeError bool, conn io.Reader) error {
-	var err error
+	var (
+		err   error
+		count int
+	)
 	buf := make([]byte, 8192+1) /* Sync with conmon STDIO_BUF_SIZE */
+	count = 0
 	for {
-		logrus.Infof("Read start")
+		count++
+		logrus.Infof("Read start: %d's read", count)
 		nr, er := conn.Read(buf)
-		logrus.Infof("Read done")
+		logrus.Infof("Read done: %d bytes read", nr)
 		if nr > 0 {
 			var dst io.Writer
 			var doWrite bool

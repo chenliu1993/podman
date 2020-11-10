@@ -5,6 +5,7 @@ ARG RUNC_VERSION
 ARG CNI_PLUGINS_VERSION
 ARG PODMAN_VERSION
 
+# RUN echo -e http://mirrors.tuna.tsinghua.edu.cn/alpine/v3.11/main/ > /etc/apk/repositories
 RUN apk --no-cache add bash btrfs-progs-dev build-base device-mapper git glib-dev go-md2man gpgme-dev ip6tables libassuan-dev libseccomp-dev libselinux-dev lvm2-dev openssl ostree-dev pkgconf protobuf-c-dev protobuf-dev
 RUN git config --global advice.detachedHead false
 
