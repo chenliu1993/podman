@@ -27,6 +27,15 @@ ARG REVISION
 ARG PODMAN_VERSION
 ARG IMAGE_NAME
 
+ENV PODMAN_UID="1000" \
+    PODMAN_USER="podman" \
+    PODMAN_GID="1000" \
+    PODMAN_GROUP="podman"
+
+RUN set -ex; \
+    groupadd -r --gid "$PODMAN_GID" "$PODMAN_GROUP"; \
+    useradd -r --gid "$PODMAN_UID" --gid "$PODMAN_GID" "$PODMAN_USER";
+
 LABEL maintainer="Jeff Wu <jeff.wu.junfei@gmail.com>"
 
 LABEL org.opencontainers.image.created=$CREATED \
@@ -46,5 +55,7 @@ COPY --from=builder /go/src/github.com/chenliu1993/podman/bin/ /usr/bin/
 COPY files/87-podman-bridge.conflist /etc/cni/net.d/
 COPY files/containers.conf files/registries.conf files/policy.json files/storage.conf /etc/containers/
 
+RUN chown -R "$PODMAN_UID:$PODMAN_GID" /usr/bin/podman;
+USER $PODMAN_USER
 ENTRYPOINT ["<BIN>"]
 CMD ["help"]
