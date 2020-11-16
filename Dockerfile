@@ -20,7 +20,8 @@ RUN git clone --branch v$CNI_PLUGINS_VERSION https://github.com/containernetwork
 RUN git clone https://github.com/chenliu1993/podman $GOPATH/src/github.com/chenliu1993/podman && \
     cd $GOPATH/src/github.com/chenliu1993/podman && LDFLAGS="-s -w" make varlink_generate <BIN> BUILDTAGS="selinux seccomp apparmor"
 
-FROM alpine:3.11.3
+# FROM alpine:3.11.3
+FROM centos:8
 
 ARG CREATED
 ARG REVISION
